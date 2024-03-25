@@ -88,10 +88,10 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART1_UART_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 	iap_init();
-	HAL_UART_Receive_IT(&huart1, receive_buffer, 20);
+	HAL_UART_Receive_IT(&FLASH_USART_HANDLE, receive_buffer, 20);
 
 	while (current_ms < IAP_CHECK_TIME && boot_mode == NORMAL_BOOT) // wait IAP_CHECK_TIME & Switch To Firmware Upgrade Mode
 	{
@@ -192,7 +192,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                 if (int_msg == 0x00)  // IAP Don't Send, So Send OK Response
                 {
                     ble_rtu_message_packet(transmit_buffer, SLAVE_CATTRACKSOS, FNC_OK, NULL, 0);
-                    HAL_UART_Transmit(&huart1, transmit_buffer, 20, HAL_MAX_DELAY);
+                    HAL_UART_Transmit(&FLASH_USART_HANDLE, transmit_buffer, 20, HAL_MAX_DELAY);
                 }
             }
         }
@@ -200,12 +200,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
         {
             // Send ERROR Response
             ble_rtu_message_packet(transmit_buffer, SLAVE_CATTRACKSOS, FNC_ERROR, NULL, 0);
-            HAL_UART_Transmit(&huart1, transmit_buffer, 20, HAL_MAX_DELAY);
+            HAL_UART_Transmit(&FLASH_USART_HANDLE, transmit_buffer, 20, HAL_MAX_DELAY);
         }
     }
     
     // Wait Next Receive
-    HAL_UART_Receive_IT(&huart1, receive_buffer, 20);
+    HAL_UART_Receive_IT(&FLASH_USART_HANDLE, receive_buffer, 20);
 }
 /* USER CODE END 4 */
 
